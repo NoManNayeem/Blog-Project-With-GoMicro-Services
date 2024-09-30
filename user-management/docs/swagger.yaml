@@ -1,0 +1,207 @@
+basePath: /
+definitions:
+  user.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.ProfileRequest:
+    properties:
+      bio:
+        type: string
+      full_name:
+        type: string
+    type: object
+  user.RegistrationRequest:
+    properties:
+      full_name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.User:
+    properties:
+      bio:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      role:
+        description: Role can be 'Writer' or 'Admin'
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is a simple User Management API for handling user registration,
+    login, and RBAC.
+  title: User Management API
+  version: "1.0"
+paths:
+  /admin:
+    get:
+      description: Demonstrates role-based access control for admin users.
+      responses:
+        "200":
+          description: Welcome, Admin!
+          schema:
+            type: string
+        "403":
+          description: 'Access denied: Admins only'
+          schema:
+            type: string
+      summary: Admin only access
+      tags:
+      - Admin
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user and returns a JWT token
+      parameters:
+      - description: User Login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login a user
+      tags:
+      - User
+  /profile:
+    get:
+      description: Get the profile of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user profile
+      tags:
+      - Profile
+    put:
+      consumes:
+      - application/json
+      description: Update the profile of the authenticated user
+      parameters:
+      - description: User Profile
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/user.ProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user profile
+      tags:
+      - Profile
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user by providing username, password, and full name
+      parameters:
+      - description: User Registration
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegistrationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - User
+swagger: "2.0"
